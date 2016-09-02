@@ -57,6 +57,33 @@ var db = firebase.database();
     });
   });
 
+  //get all items
+  app.get('/api/items', function(req,res){
+    console.log('Getting Items');
+    
+    db.ref('/items/').once('value').then(function(snapshot){
+      res.send(snapshot.val());
+    });
+  });
+  
+  // create new todo
+  app.post('/api/items', function(req,res){
+    db.ref('/items/').push(req.body.text);
+    db.ref('/items/').once('value').then(function(snapshot){
+      res.send(snapshot.val());
+    });
+    
+  });
+
+  // delete a todo
+  app.delete('/api/items/:item_id', function(req,res){
+    console.log('Deleting Item');
+    db.ref('/items/' + req.params.item_id).remove();
+    db.ref('/items/').once('value').then(function(snapshot){
+      res.send(snapshot.val());
+    });
+  });
+
   // application
   
   app.get('*', function(req,res){
