@@ -41,7 +41,8 @@ function mainController($scope, $http){
   // delete a todo after checking it
   $scope.deleteTodo = function(id) {
       console.log(id);
-      $http.delete('/api/todos/' + id)
+      setTimeout(function(){
+        $http.delete('/api/todos/' + id)
           .success(function(data) {
               $scope.todos = [];
       
@@ -56,5 +57,7 @@ function mainController($scope, $http){
           .error(function(data) {
               console.log('Error: ' + data);
           });
+      }, 500);
+      
   };
 }

@@ -12,15 +12,22 @@
 
     <!-- SCROLLS -->
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <style>
         html                    { overflow-y:scroll; }
-        body                    { padding-top:50px; }
+      body{
+        margin-top:50px;
+      }
         #todo-list              { margin-bottom:30px; }
+      .btn{padding: 0 1rem;}
     </style>
 
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
     <script src="core.js"></script>
 
 </head>
@@ -28,40 +35,45 @@
 <body ng-controller="mainController">
     <div class="container">
 
-        <!-- HEADER AND TODO COUNT -->
-        <div class="jumbotron text-center">
-            <h1>Hobstone Tasks <span class="label label-info">{{ todos.length }}</span></h1>
-        </div>
-
-        <!-- TODO LIST -->
-        <div id="todo-list" class="row">
-            <div class="col-sm-4 col-sm-offset-4">
-
-                <!-- LOOP OVER THE TODOS IN $scope.todos -->
-                <div class="checkbox" ng-repeat="todo in todos">
-                    <label>
-                        <input type="checkbox" ng-click="deleteTodo(todo.id)"> {{ todo.text }}
-                    </label>
-                </div>
-
-            </div>
-        </div>
-
+        <!-- HEADER AND TODO COUNT
+        <h1>Hobstone Tasks <span class="label label-info">{{ todos.length }}</span></h1>
+        -->
+      
         <!-- FORM TO CREATE TODOS -->
         <div id="todo-form" class="row">
-            <div class="col-sm-8 col-sm-offset-2 text-center">
-                <form>
-                    <div class="form-group">
-
-                        <!-- BIND THIS VALUE TO formData.text IN ANGULAR -->
-                        <input type="text" class="form-control input-lg text-center" placeholder="I want to buy a puppy that will love me forever" ng-model="formData.text">
-                    </div>
-
-                    <!-- createToDo() WILL CREATE NEW TODOS -->
-                    <button type="submit" class="btn btn-primary btn-lg" ng-click="createTodo()">Add</button>
-                </form>
-            </div>
+            
         </div>
+      
+        <div class="row">
+          <div class="col s12 m8 offset-m2">
+            <div class="card">
+              <div class="card-content">
+                <span class="card-title">Todos</span>
+
+                <form>
+                  <button type="submit" class="btn waves-effect waves-light" style="float: right" ng-click="createTodo()"><i class="material-icons">add</i></button>
+                  <div style="overflow: hidden; padding-right: .5em;">
+                     <input autofocus type="text" class="form-control input-lg" placeholder="Add a task" ng-model="formData.text">  
+                  </div>​
+                </form>
+ 
+                <div id="todo-list" class="row">
+                    <div>
+
+                        <!-- LOOP OVER THE TODOS IN $scope.todos -->
+                        <div class="checkbox" ng-repeat="todo in todos">
+                            <p>
+                              <input type="checkbox" ng-click="deleteTodo(todo.id)" id="{{todo.id}}" />
+                              <label for="{{todo.id}}">{{ todo.text }}</label>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>      
 
     </div>
 
