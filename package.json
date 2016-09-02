@@ -5,9 +5,10 @@
   "description": "Another TODO app",
   "repository": "https://bitbucket.org/ishg/todomino.git",
   "license": "MIT",
-  "scripts": [
+  "scripts": {
     "start": "node server.js",
-  ],
+    "install": "npm install"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
