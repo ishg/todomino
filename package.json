@@ -6,8 +6,7 @@
   "repository": "https://bitbucket.org/ishg/todomino.git",
   "license": "MIT",
   "scripts": {
-    "start": "node server.js",
-    "install": "npm install"
+    "start": "node server.js"
   },
   "dependencies": {
     "body-parser": "^1.15.2",
