@@ -84,6 +84,33 @@ var db = firebase.database();
     });
   });
 
+  //get all items
+  app.get('/api/notes', function(req,res){
+    console.log('Getting Notes');
+    
+    db.ref('/notes/').once('value').then(function(snapshot){
+      res.send(snapshot.val());
+    });
+  });
+  
+  // create new todo
+  app.post('/api/notes', function(req,res){
+    db.ref('/notes/').push(req.body.text);
+    db.ref('/notes/').once('value').then(function(snapshot){
+      res.send(snapshot.val());
+    });
+    
+  });
+
+  // delete a todo
+  app.delete('/api/notes/:note_id', function(req,res){
+    console.log('Deleting Note');
+    db.ref('/notes/' + req.params.note_id).remove();
+    db.ref('/notes/').once('value').then(function(snapshot){
+      res.send(snapshot.val());
+    });
+  });
+
   // application
   
   app.get('*', function(req,res){

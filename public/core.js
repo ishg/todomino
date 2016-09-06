@@ -3,6 +3,7 @@ var toDomino = angular.module('toDomino', []);
 function mainController($scope, $http){
   $scope.formData = {};
   $scope.shopformData = {};
+  $scope.noteformData = {};
   
   $http.get('/api/todos')
     .success(function(data){
@@ -107,6 +108,64 @@ function mainController($scope, $http){
       
               for (var i in data) {
                 $scope.items.push({
+                  "id": i,
+                  "text": data[i]
+                })
+              }
+              console.log(data);
+          })
+          .error(function(data) {
+              console.log('Error: ' + data);
+          });
+      }, 500);
+      
+  };
+  
+  $http.get('/api/notes')
+    .success(function(data){
+      $scope.notes = [];
+      
+      for (var i in data) {
+        $scope.notes.push({
+          "id": i,
+          "text": data[i]
+        })
+      }  
+    })
+    .error(function(data){
+      console.log('Error: ' + data);  
+    })
+  
+  // when submitting the add form, send the text to the node API
+  $scope.createNote = function() {
+      $http.post('/api/notes', $scope.noteformData)
+          .success(function(data) {
+              $scope.noteformData = {}; // clear the form so our user is ready to enter another
+              $scope.notes = [];
+      
+              for (var i in data) {
+                $scope.notes.push({
+                  "id": i,
+                  "text": data[i]
+                })
+              }
+              console.log(data);
+          })
+          .error(function(data) {
+              console.log('Error: ' + data);
+          });
+  };
+
+  // delete a todo after checking it
+  $scope.deleteNote = function(id) {
+      console.log(id);
+      setTimeout(function(){
+        $http.delete('/api/notes/' + id)
+          .success(function(data) {
+              $scope.notes = [];
+      
+              for (var i in data) {
+                $scope.notes.push({
                   "id": i,
                   "text": data[i]
                 })
