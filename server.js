@@ -28,7 +28,7 @@ var db = firebase.database();
 
 // routes
   
-  //api
+  //API
   
   //get all todos
   app.get('/api/todos', function(req,res){

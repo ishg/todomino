@@ -1,4 +1,4 @@
-var toDomino = angular.module('toDomino', []);
+var toDomino = angular.module('toDomino', ['ui.router']);
 
 function mainController($scope, $http){
   $scope.formData = {};
@@ -180,5 +180,9 @@ function mainController($scope, $http){
   };
   
   
+  
+}
+
+function authController($scope, $http){
   
 }
