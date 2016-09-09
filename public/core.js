@@ -41,9 +41,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   // delete a todo after checking it
   $scope.deleteTodo = function(id) {
-    setTimeout(function(){
-      $scope.todos.$remove(id);  
-    }, 500);
+    $scope.todos.$remove(id);  
   };
 
   Items.$loaded()
@@ -70,9 +68,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   // delete a todo after checking it
   $scope.deleteItem = function(id) {
-    setTimeout(function(){
-      $scope.items.$remove(id);  
-    }, 500);
+    $scope.items.$remove(id);  
   };
 })
 
