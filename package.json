@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "author": "ishg",
   "description": "Another TODO app",
-  "repository": "https://bitbucket.org/ishg/todomino.git",
+  "repository": "https://github.com/ishg/todomino.git",
   "license": "MIT",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "angularfire": "^2.0.2",
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "firebase": "^3.3.0",

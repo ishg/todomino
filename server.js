@@ -25,6 +25,7 @@ var config = {
   };
 firebase.initializeApp(config);
 var db = firebase.database();
+var auth = firebase.auth();
 
 // routes
   
@@ -116,6 +117,10 @@ var db = firebase.database();
   app.get('*', function(req,res){
     res.sendFile('./public/index.html');
   });
+
+  // authentication
+
+  
   
 // list (start app with node.js)
 app.listen(process.env.PORT || 5000);

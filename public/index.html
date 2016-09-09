@@ -26,9 +26,20 @@
 
     <!-- SPELLS -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script><!-- load jquery -->
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script><!-- load angular -->
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular.min.js"></script><!-- load angular -->
+    <script src="https://www.gstatic.com/firebasejs/3.3.0/firebase.js"></script><!-- load firebase -->
+    <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script><!-- load AngularFire -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.3.1/angular-ui-router.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/js/materialize.min.js"></script>
+    <script>
+      var config = {
+        apiKey: "AIzaSyC6-XFAoswCxwKHckrxVngFRGp6PMh65I8",
+        authDomain: "todomino-9b402.firebaseapp.com",
+        databaseURL: "https://todomino-9b402.firebaseio.com",
+        storageBucket: "todomino-9b402.appspot.com",
+      };
+      firebase.initializeApp(config);
+    </script>
     <script src="core.js"></script>
 
 </head>
@@ -41,7 +52,7 @@
         -->
       
         <div class="row">
-          <div class="col s12 m4 ">
+          <div class="col s12 m6 ">
             <div class="card">
               <div class="card-content">
                 <span class="card-title">Todos</span>
@@ -59,8 +70,8 @@
                         <!-- LOOP OVER THE TODOS IN $scope.todos -->
                         <div class="checkbox" ng-repeat="todo in todos">
                             <p>
-                              <input type="checkbox" ng-click="deleteTodo(todo.id)" id="{{todo.id}}" />
-                              <label for="{{todo.id}}">{{ todo.text }}</label>
+                              <input type="checkbox" ng-click="deleteTodo(todo)" id="{{todo}}" />
+                              <label for={{todo}}>{{ todo.text }}</label>
                             </p>
                         </div>
 
@@ -69,7 +80,7 @@
               </div>
             </div>
           </div>
-          <div class="col s12 m4 ">
+          <div class="col s12 m6 ">
             <div class="card">
               <div class="card-content">
                 <span class="card-title">Shopping</span>
@@ -87,36 +98,8 @@
                         <!-- LOOP OVER THE TODOS IN $scope.items -->
                         <div class="checkbox" ng-repeat="item in items">
                             <p>
-                              <input type="checkbox" ng-click="deleteItem(item.id)" id="{{item.id}}" />
-                              <label for="{{item.id}}">{{ item.text }}</label>
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col s12 m4">
-            <div class="card">
-              <div class="card-content">
-                <span class="card-title">Notes</span>
-
-                <form>
-                  <button type="submit" class="btn waves-effect waves-light purple darken-1" style="float: right" ng-click="createNote()"><i class="material-icons">add</i></button>
-                  <div style="overflow: hidden; padding-right: .5em;">
-                     <input autofocus type="text" class="form-control input-lg" placeholder="Add a note" ng-model="noteformData.text">  
-                  </div>​
-                </form>
- 
-                <div id="note-list" class="row">
-                    <div>
-
-                        <!-- LOOP OVER THE TODOS IN $scope.notes -->
-                        <div class="checkbox" ng-repeat="note in notes">
-                            <p>
-                              <input type="checkbox" ng-click="deleteNote(note.id)" id="{{note.id}}" />
-                              <label for="{{note.id}}">{{ note.text }}</label>
+                              <input type="checkbox" ng-click="deleteItem(item)" id="{{item}}" />
+                              <label for="{{item}}">{{ item.text }}</label>
                             </p>
                         </div>
 
