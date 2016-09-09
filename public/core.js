@@ -35,6 +35,12 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     });
   };
 
+  $scope.checkTodo = function(todo){
+    var index = Todos.$indexFor(todo.$id);
+    Todos[index].done = !todo.done;
+    Todos.$save(index);
+  }
+
   // delete a todo after checking it
   $scope.deleteTodo = function(id) {
     setTimeout(function(){
@@ -69,6 +75,6 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .controller('AuthCtrl', function($scope, $firebaseAuth){
-  
+
 });
 

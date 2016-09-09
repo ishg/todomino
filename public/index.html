@@ -14,14 +14,9 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"><!-- load bootstrap -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.7/css/materialize.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-
+    <link rel="stylesheet" href="style.css">
     <style>
-        html                    { overflow-y:scroll; }
-      body{
-        margin-top:25px;
-      }
-        #todo-list              { margin-bottom:30px; }
-      .btn{padding: 0 1rem;}
+      
     </style>
 
     <!-- SPELLS -->
@@ -70,8 +65,8 @@
                         <!-- LOOP OVER THE TODOS IN $scope.todos -->
                         <div class="checkbox" ng-repeat="todo in todos">
                             <p>
-                              <input type="checkbox" ng-click="deleteTodo(todo)" id="{{todo}}" />
-                              <label for={{todo}}>{{ todo.text }}</label>
+                              <input ng-checked="todo.done" type="checkbox" ng-click="checkTodo(todo)" id="{{todo}}" />
+                              <label ng-class="{strike: todo.done}" for={{todo}}>{{ todo.text }}</label>
                             </p>
                         </div>
 
