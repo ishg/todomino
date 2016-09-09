@@ -93,8 +93,8 @@
                         <!-- LOOP OVER THE TODOS IN $scope.items -->
                         <div class="checkbox" ng-repeat="item in items">
                             <p>
-                              <input type="checkbox" ng-click="deleteItem(item)" id="{{item}}" />
-                              <label for="{{item}}">{{ item.text }}</label>
+                              <input ng-checked="item.done" type="checkbox" ng-click="checkItem(item)" id="{{item}}" />
+                              <label ng-class="{strike: item.done}" for="{{item}}">{{ item.text }}</label>
                             </p>
                         </div>
 

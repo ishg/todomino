@@ -27,8 +27,6 @@ angular.module('toDomino', ['ui.router', 'firebase'])
  
   $scope.createTodo = function() {
     $scope.todos.$add({"text": $scope.formData.text, "done": false}).then(function(ref){
-      var id = ref.key;
-      console.log("Added record with id " + id);
       $scope.formData = {};
     }).catch(function(error){
       console.log("ERROR: " + error);
@@ -58,13 +56,17 @@ angular.module('toDomino', ['ui.router', 'firebase'])
  
   $scope.createItem = function() {
     $scope.items.$add({"text": $scope.shopformData.text, "done": false}).then(function(ref){
-      var id = ref.key;
-      console.log("Added record with id " + id);
       $scope.shopformData = {}
     }).catch(function(error){
       console.log("ERROR: " + error);
     });
   };
+
+  $scope.checkItem = function(item){
+    var index = Items.$indexFor(item.$id);
+    Items[index].done = !item.done;
+    Items.$save(index);
+  }
 
   // delete a todo after checking it
   $scope.deleteItem = function(id) {
