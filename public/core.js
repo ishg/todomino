@@ -66,5 +66,9 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       $scope.items.$remove(id);  
     }, 500);
   };
+})
+
+.controller('AuthCtrl', function($scope, $firebaseAuth){
+  
 });
 
