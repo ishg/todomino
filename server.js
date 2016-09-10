@@ -5,6 +5,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
+var sass = require('node-sass-middleware');
 
 // configuration
 

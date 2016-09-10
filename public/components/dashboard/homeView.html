@@ -1,0 +1,60 @@
+<div class="row">
+  <div class="col s12 m6 ">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Todos</span>
+
+        <form>
+          <button type="submit" class="btn waves-effect waves-light orange darken-1" style="float: right" ng-click="createTodo()"><i class="material-icons">add</i></button>
+          <div style="overflow: hidden; padding-right: .5em;">
+             <input autofocus type="text" class="form-control input-lg " placeholder="Add a task" ng-model="formData.text">  
+          </div>​
+        </form>
+
+        <div id="todo-list" class="row">
+            <div>
+
+                <!-- LOOP OVER THE TODOS IN $scope.todos -->
+                <div class="checkbox" ng-repeat="todo in todos">
+                    <p>
+                      <input ng-checked="todo.done" type="checkbox" ng-click="checkTodo(todo)" id="{{todo}}" />
+                      <label ng-class="{strike: todo.done}" for={{todo}}>{{ todo.text }}</label>
+                      <a ng-show="todo.done" ng-click="deleteTodo(todo)"><i class="material-icons grey-text text-darken-2 delBtn">delete</i></a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m6 ">
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Shopping</span>
+
+        <form>
+          <button type="submit" class="btn waves-effect waves-light green darken-1" style="float: right" ng-click="createItem()"><i class="material-icons">add</i></button>
+          <div style="overflow: hidden; padding-right: .5em;">
+             <input autofocus type="text" class="form-control input-lg" placeholder="Add an item" ng-model="shopformData.text">  
+          </div>​
+        </form>
+
+        <div id="item-list" class="row">
+            <div>
+
+                <!-- LOOP OVER THE TODOS IN $scope.items -->
+                <div class="checkbox" ng-repeat="item in items">
+                    <p>
+                      <input ng-checked="item.done" type="checkbox" ng-click="checkItem(item)" id="{{item}}" />
+                      <label ng-class="{strike: item.done}" for="{{item}}">{{ item.text }}</label>
+                      <a ng-show="item.done" ng-click="deleteItem(item)"><i class="material-icons grey-text text-darken-2 delBtn">delete</i></a>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

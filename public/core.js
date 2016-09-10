@@ -1,5 +1,20 @@
 angular.module('toDomino', ['ui.router', 'firebase'])
 
+.config(function($stateProvider, $urlRouterProvider){
+  $urlRouterProvider.otherwise('/auth');
+  $stateProvider
+    .state('auth', {
+      url: '/auth',
+      templateUrl: 'components/auth/authView.html',
+      controller: 'AuthCtrl as auth'
+    })
+    .state('home', {
+      url: '/home', 
+      templateUrl: '/components/dashboard/homeView.html',
+      controller: 'mainController as main'
+    });
+})
+
 .factory('Todos', function($firebaseArray){
   return $firebaseArray(firebase.database().ref().child('todos'));
 })
@@ -73,6 +88,6 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .controller('AuthCtrl', function($scope, $firebaseAuth){
-
+  $('ul.tabs').tabs();
 });
 
