@@ -3,7 +3,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 .run(["$rootScope", "$state", function($rootScope, $state) {
   $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
     // We can catch the error thrown when the $requireSignIn promise is rejected
-    // and redirect the user back to the home page
+    // and redirect the user back to the home 
     if (error === "AUTH_REQUIRED") {
       $state.go("auth");
     }
@@ -43,15 +43,21 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .factory('Todos', function($firebaseArray){
-  return $firebaseArray(firebase.database().ref().child('todos'));
+  function getTodos(){
+    return $firebaseArray(firebase.database().ref().child('todos'));
+  }
+  return{
+    getTodos: getTodos
+  }
 })
 
 .factory('Items', function($firebaseArray){
-  return $firebaseArray(firebase.database().ref().child('items'));
-})
-
-.factory('Notes', function($firebaseArray){
-  return $firebaseArray(firebase.database().ref().child('notes'));
+  function getItems(){
+    return $firebaseArray(firebase.database().ref().child('items'));  
+  }
+  return{
+    getItems: getItems
+  }
 })
 
 .factory('Auth', function($firebaseAuth){
@@ -59,18 +65,14 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .controller('mainController', 
-  function($state, $http, $scope, $firebaseArray, Todos, Notes, Items, Auth){
-  
+  function($rootScope, $state, $http, $scope, Todos, Items, Auth){
+
   $scope.formData = {};
   $scope.shopformData = {};
 
-  Todos.$loaded()
-    .then(function(){
-      console.log("Todos Loaded");
-      $scope.todos = Todos;
-    }).catch(function(error){
-      console.log("ERROR: " + error);
-    });
+  //TODOS
+
+  $scope.todos = Todos.getTodos();
  
   $scope.createTodo = function() {
     $scope.todos.$add(
@@ -85,23 +87,18 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   };
 
   $scope.checkTodo = function(todo){
-    var index = Todos.$indexFor(todo.$id);
-    Todos[index].done = !todo.done;
-    Todos.$save(index);
+    var index = $scope.todos.$indexFor(todo.$id);
+    $scope.todos[index].done = !todo.done;
+    $scope.todos.$save(index);
   }
 
-  // delete a todo after checking it
   $scope.deleteTodo = function(id) {
     $scope.todos.$remove(id);  
   };
 
-  Items.$loaded()
-    .then(function(){
-      console.log("Items Loaded");
-      $scope.items = Items;
-    }).catch(function(error){
-      console.log("ERROR: " + error);
-    });
+  // ITEMS
+
+  $scope.items = Items.getItems();
  
   $scope.createItem = function() {
     $scope.items.$add(
@@ -116,36 +113,25 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   };
 
   $scope.checkItem = function(item){
-    var index = Items.$indexFor(item.$id);
-    Items[index].done = !item.done;
-    Items.$save(index);
+    var index = $scope.items.$indexFor(item.$id);
+    $scope.items[index].done = !item.done;
+    $scope.items.$save(index);
   }
 
-  // delete a todo after checking it
   $scope.deleteItem = function(id) {
     $scope.items.$remove(id);
   }
 
+  //AUTHENTICATION
+
+  $scope.firebaseUser = Auth.$getAuth();
+
   $scope.signOut = function(){
+    $scope.todos.$destroy();
+    $scope.items.$destroy();
     Auth.$signOut().then(function(){
-      console.log("signed out user");
-    })
-  }
-  
-  Auth.$onAuthStateChanged(function(firebaseUser){
-    if(firebaseUser){
-      $scope.firebaseUser = firebaseUser;
-    }else{
       $state.go('auth');
-    }
-  });
-
-  var firebaseUser = Auth.$getAuth();
-
-  if (firebaseUser) {
-    console.log("Signed in as:", firebaseUser.uid);
-  } else {
-    console.log("Signed out");
+    })
   }
 
 })
