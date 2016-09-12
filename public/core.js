@@ -8,6 +8,12 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       $state.go("auth");
     }
   });
+
+  $rootScope.$on('$stateChangeSuccess', 
+  function(event, toState, toParams, fromState, fromParams){
+    $rootScope.stateIsLoading = false;
+  })
+
 }])
 
 .config(function($stateProvider, $urlRouterProvider){
@@ -72,7 +78,11 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   //TODOS
 
+  $rootScope.stateIsLoading = true;
+
   $scope.todos = Todos.getTodos();
+
+  $scope.todos.$loaded().then(function(){ $rootScope.stateIsLoading = false;})
  
   $scope.createTodo = function() {
     $scope.todos.$add(
@@ -98,7 +108,11 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   // ITEMS
 
+  $rootScope.stateIsLoading = true;
+
   $scope.items = Items.getItems();
+
+  $scope.items.$loaded().then(function(){ $rootScope.stateIsLoading = false;})
  
   $scope.createItem = function() {
     $scope.items.$add(
@@ -136,7 +150,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
 })
 
-.controller('AuthCtrl', function($scope, $state, $location, Auth){
+.controller('AuthCtrl', function($rootScope, $scope, $state, $location, Auth){
   $('ul.tabs').tabs();
   
   var authCtrl = this;
@@ -166,6 +180,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   }
 
   function login(){
+    $rootScope.stateIsLoading = true;
     Auth.$signInWithEmailAndPassword(authCtrl.user.email, authCtrl.user.password)
       .then(function(firebaseUser) {
         $state.go('home');

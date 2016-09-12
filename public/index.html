@@ -35,6 +35,21 @@
 
 </head>
 <body ng-app="toDomino">
-  <div ui-view></div>
+  <div ng-hide="stateIsLoading" ui-view></div>
+  <div class="row" style="margin-top: 100px;">
+    <div class="col s12 center">
+      <div ng-show="stateIsLoading" class="preloader-wrapper big active">
+        <div class="center-align valign spinner-layer spinner-blue-only">
+          <div class="circle-clipper left">
+            <div class="circle"></div>
+          </div><div class="gap-patch">
+            <div class="circle"></div>
+          </div><div class="circle-clipper right">
+            <div class="circle"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
