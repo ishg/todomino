@@ -1,14 +1,14 @@
 angular.module('toDomino', ['ui.router', 'firebase'])
 
-.run(function($rootScope, $state){
-  $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
-    if(error === "AUTH_REQUIRED"){
-      console.log("AUTH_REQUIRED");
+.run(["$rootScope", "$state", function($rootScope, $state) {
+  $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
+    // We can catch the error thrown when the $requireSignIn promise is rejected
+    // and redirect the user back to the home page
+    if (error === "AUTH_REQUIRED") {
       $state.go("auth");
     }
-  })
-})
-
+  });
+}])
 
 .config(function($stateProvider, $urlRouterProvider){
   $urlRouterProvider.otherwise('/auth');
@@ -18,7 +18,10 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       templateUrl: 'components/auth/authView.html',
       controller: 'AuthCtrl as auth',
       resolve: {
-        'currentAuth': ['Auth', function(Auth){
+        // controller will not be loaded until $waitForSignIn resolves
+        // Auth refers to our $firebaseAuth wrapper in the factory below
+        "currentAuth": ["Auth", function(Auth) {
+          // $waitForSignIn returns a promise so the resolve waits for it to complete
           return Auth.$waitForSignIn();
         }]
       }
@@ -56,7 +59,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .controller('mainController', 
-  function($http, $scope, $firebaseArray, Todos, Notes, Items, Auth){
+  function($state, $http, $scope, $firebaseArray, Todos, Notes, Items, Auth){
   
   $scope.formData = {};
   $scope.shopformData = {};
@@ -126,34 +129,39 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   $scope.signOut = function(){
     Auth.$signOut().then(function(){
       console.log("signed out user");
-
     })
   }
   
   Auth.$onAuthStateChanged(function(firebaseUser){
     if(firebaseUser){
       $scope.firebaseUser = firebaseUser;
-      console.log("here")
     }else{
-      console.log("there")
-      $http.get('/');
+      $state.go('auth');
     }
-  })
+  });
+
+  var firebaseUser = Auth.$getAuth();
+
+  if (firebaseUser) {
+    console.log("Signed in as:", firebaseUser.uid);
+  } else {
+    console.log("Signed out");
+  }
 
 })
 
 .controller('AuthCtrl', function($scope, $state, $location, Auth){
   $('ul.tabs').tabs();
   
-  var vm = this;
+  var authCtrl = this;
 
-  firebaseUser = Auth.$getAuth();
-  if(firebaseUser){
-    $state.go('home');
-  }
+  authCtrl.user = {
+    email: '',
+    password: ''
+  };
 
-  vm.createUser = createUser;
-  vm.login = login;
+  authCtrl.createUser = createUser;
+  authCtrl.login = login;
 
   function createUser(){
     var firebaseUser = Auth.$getAuth();
@@ -162,23 +170,22 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       Auth.$signOut();
     }
 
-    Auth.$createUserWithEmailAndPassword(vm.email, vm.password)
+    Auth.$createUserWithEmailAndPassword(authCtrl.user.email, authCtrl.user.password)
       .then(function(firebaseUser) {
         console.log("User " + firebaseUser.uid + " created successfully!");
         login();
       }).catch(function(error) {
-        console.error("Error: ", error);
+        authCtrl.error = error;
       });
   }
 
   function login(){
-    Auth.$signInWithEmailAndPassword(vm.email, vm.password).then(function(firebaseUser) {
-      vm.email = null;
-      vm.password = null;
-      $state.go('home');
-    }).catch(function(error) {
-      console.error("Authentication failed:", error);
-    });
+    Auth.$signInWithEmailAndPassword(authCtrl.user.email, authCtrl.user.password)
+      .then(function(firebaseUser) {
+        $state.go('home');
+      }).catch(function(error) {
+        authCtrl.error = error;
+      });
   }
 });
 
