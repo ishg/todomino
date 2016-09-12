@@ -2,9 +2,6 @@ html{
   overflow-y:scroll; 
 }
 
-body{
-  margin-top:25px;
-}
 #todo-list{ 
   margin-bottom:30px; 
 }

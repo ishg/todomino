@@ -1,17 +1,41 @@
 angular.module('toDomino', ['ui.router', 'firebase'])
 
+.run(function($rootScope, $state){
+  $rootScope.$on('$stateChangeError', function(event, toState, toParams, fromState, fromParams, error){
+    if(error === "AUTH_REQUIRED"){
+      console.log("AUTH_REQUIRED");
+      $state.go("auth");
+    }
+  })
+})
+
+
 .config(function($stateProvider, $urlRouterProvider){
   $urlRouterProvider.otherwise('/auth');
   $stateProvider
     .state('auth', {
       url: '/auth',
       templateUrl: 'components/auth/authView.html',
-      controller: 'AuthCtrl as auth'
+      controller: 'AuthCtrl as auth',
+      resolve: {
+        'currentAuth': ['Auth', function(Auth){
+          return Auth.$waitForSignIn();
+        }]
+      }
     })
     .state('home', {
       url: '/home', 
       templateUrl: '/components/dashboard/homeView.html',
-      controller: 'mainController as main'
+      controller: 'mainController as main',
+      resolve: {
+        // controller will not be loaded until $requireSignIn resolves
+        // Auth refers to our $firebaseAuth wrapper in the factory below
+        "currentAuth": ["Auth", function(Auth) {
+          // $requireSignIn returns a promise so the resolve waits for it to complete
+          // If the promise is rejected, it will throw a $stateChangeError (see above)
+          return Auth.$requireSignIn();
+        }]
+      }
     });
 })
 
@@ -27,8 +51,12 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   return $firebaseArray(firebase.database().ref().child('notes'));
 })
 
-.controller('mainController', function($http, $scope, $firebaseArray, Todos, Notes, Items){
-    
+.factory('Auth', function($firebaseAuth){
+  return $firebaseAuth();
+})
+
+.controller('mainController', function($http, $scope, $state, Todos, Notes, Items, Auth){
+
   $scope.formData = {};
   $scope.shopformData = {};
 
@@ -83,11 +111,65 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   // delete a todo after checking it
   $scope.deleteItem = function(id) {
-    $scope.items.$remove(id);  
-  };
+    $scope.items.$remove(id);
+  }
+
+  $scope.signOut = function(){
+    Auth.$signOut().then(function(){
+      console.log("signed out user");
+
+    })
+  }
+  
+  Auth.$onAuthStateChanged(function(firebaseUser){
+    if(firebaseUser){
+      $scope.firebaseUser = firebaseUser;
+      console.log("here")
+    }else{
+      console.log("there")
+      $http.get('/');
+    }
+  })
+
 })
 
-.controller('AuthCtrl', function($scope, $firebaseAuth){
+.controller('AuthCtrl', function($scope, $state, $location, Auth){
   $('ul.tabs').tabs();
+  
+  var vm = this;
+
+  firebaseUser = Auth.$getAuth();
+  if(firebaseUser){
+    $state.go('home');
+  }
+
+  vm.createUser = createUser;
+  vm.login = login;
+
+  function createUser(){
+    var firebaseUser = Auth.$getAuth();
+
+    if(firebaseUser){
+      Auth.$signOut();
+    }
+
+    Auth.$createUserWithEmailAndPassword(vm.email, vm.password)
+      .then(function(firebaseUser) {
+        console.log("User " + firebaseUser.uid + " created successfully!");
+        login();
+      }).catch(function(error) {
+        console.error("Error: ", error);
+      });
+  }
+
+  function login(){
+    Auth.$signInWithEmailAndPassword(vm.email, vm.password).then(function(firebaseUser) {
+      vm.email = null;
+      vm.password = null;
+      $state.go('home');
+    }).catch(function(error) {
+      console.error("Authentication failed:", error);
+    });
+  }
 });
 
