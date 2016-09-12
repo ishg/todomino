@@ -184,6 +184,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       .then(function(firebaseUser) {
         $state.go('home');
       }).catch(function(error) {
+        console.log(error);
         authCtrl.error = error;
       });
   }
