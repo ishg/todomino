@@ -12,7 +12,8 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   return $firebaseArray(firebase.database().ref().child('notes'));
 })
 
-.controller('mainController', function($http, $scope, $firebaseArray, Todos, Notes, Items){
+.controller('mainController', 
+  function($http, $scope, $firebaseArray, Todos, Notes, Items){
     
   $scope.formData = {};
   $scope.shopformData = {};
@@ -26,11 +27,15 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     });
  
   $scope.createTodo = function() {
-    $scope.todos.$add({"text": $scope.formData.text, "done": false}).then(function(ref){
-      $scope.formData = {};
-    }).catch(function(error){
-      console.log("ERROR: " + error);
-    });
+    $scope.todos.$add(
+      {
+        "text": $scope.formData.text, 
+        "done": false
+      }).then(function(ref){
+        $scope.formData = {};
+      }).catch(function(error){
+        console.log("ERROR: " + error);
+      });
   };
 
   $scope.checkTodo = function(todo){
@@ -53,11 +58,15 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     });
  
   $scope.createItem = function() {
-    $scope.items.$add({"text": $scope.shopformData.text, "done": false}).then(function(ref){
-      $scope.shopformData = {}
-    }).catch(function(error){
-      console.log("ERROR: " + error);
-    });
+    $scope.items.$add(
+      {
+        "text": $scope.shopformData.text, 
+        "done": false
+      }).then(function(ref){
+        $scope.shopformData = {}
+      }).catch(function(error){
+        console.log("ERROR: " + error);
+      });
   };
 
   $scope.checkItem = function(item){
