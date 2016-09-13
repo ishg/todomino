@@ -70,8 +70,24 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   return $firebaseAuth();
 })
 
+.factory('Users', function($firebaseObject){
+
+  var Users = {
+    newUserRef: function(user){
+      var ref = firebase.database().ref('/users/' + user.uid);
+      return $firebaseObject(ref);
+    },
+    getProfile: function(uid){
+      var ref = firebase.database().ref('/users/' + uid);
+      return $firebaseObject(ref);
+    }
+  };
+
+  return Users;
+})
+
 .controller('mainController', 
-  function($rootScope, $state, $http, $scope, Todos, Items, Auth){
+  function($rootScope, $state, $scope, Todos, Items, Auth, Users){
 
   $scope.formData = {};
   $scope.shopformData = {};
@@ -88,7 +104,9 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     $scope.todos.$add(
       {
         "text": $scope.formData.text, 
-        "done": false
+        "done": false,
+        "createdBy": $scope.firebaseUser.uid,
+        "completedBy": ""
       }).then(function(ref){
         $scope.formData = {};
       }).catch(function(error){
@@ -99,6 +117,13 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   $scope.checkTodo = function(todo){
     var index = $scope.todos.$indexFor(todo.$id);
     $scope.todos[index].done = !todo.done;
+    if($scope.todos[index].done){
+      var user = Users.getProfile($scope.firebaseUser.uid);
+      console.log(user['email']);
+      $scope.todos[index].completedBy = "ish"
+    }else{
+      $scope.todos[index].completedBy = ""
+    }
     $scope.todos.$save(index);
   }
 
@@ -118,7 +143,9 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     $scope.items.$add(
       {
         "text": $scope.shopformData.text, 
-        "done": false
+        "done": false,
+        "createdBy": $scope.firebaseUser.uid,
+        "completedBy": ""
       }).then(function(ref){
         $scope.shopformData = {}
       }).catch(function(error){
@@ -129,6 +156,11 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   $scope.checkItem = function(item){
     var index = $scope.items.$indexFor(item.$id);
     $scope.items[index].done = !item.done;
+    if($scope.items[index].done){
+      $scope.items[index].completedBy = $scope.firebaseUser.uid
+    }else{
+      $scope.items[index].completedBy = "";
+    }
     $scope.items.$save(index);
   }
 
@@ -150,14 +182,16 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
 })
 
-.controller('AuthCtrl', function($rootScope, $scope, $state, $location, Auth){
+.controller('AuthCtrl', function($rootScope, $scope, $state, $location, Auth, Users){
   $('ul.tabs').tabs();
   
   var authCtrl = this;
 
   authCtrl.user = {
     email: '',
-    password: ''
+    password: '',
+    firstName : '',
+    lastName: ''
   };
 
   authCtrl.createUser = createUser;
@@ -172,7 +206,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
     Auth.$createUserWithEmailAndPassword(authCtrl.user.email, authCtrl.user.password)
       .then(function(firebaseUser) {
-        console.log("User " + firebaseUser.uid + " created successfully!");
+        saveUser(firebaseUser);
         login();
       }).catch(function(error) {
         authCtrl.error = error;
@@ -185,9 +219,26 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       .then(function(firebaseUser) {
         $state.go('home');
       }).catch(function(error) {
-        console.log(error);
         authCtrl.error = error;
       });
   }
+
+  function saveUser(userData){
+    var user = Users.newUserRef(userData);
+    user.firstName = authCtrl.user.firstName;
+    user.lastName = authCtrl.user.lastName;
+    user.email = userData.email;
+
+    user.$save().then(function(){
+      authCtrl.user.firstName = null;
+      authCtrl.user.lastName = null;
+      authCtrl.user.password = null;
+      authCtrl.user.email = null;
+      user.$destroy();
+    }, function(error){
+      console.log(error);
+    });
+  }
+
 });
 
