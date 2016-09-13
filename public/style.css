@@ -21,16 +21,16 @@ body{
 .checkbox{
   padding-right: 20px;
 }
-.delBtn{
-  float: right;
-  cursor: pointer; 
-  cursor: hand;
-}
 
 .authForm{
   margin-top:30px;
 }
 
-a.active{
-  
+.chip{
+  float:right;
+}
+
+.checkbox{
+  line-height: 32px;
+  height:32px;
 }

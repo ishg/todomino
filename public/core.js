@@ -119,12 +119,15 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     $scope.todos[index].done = !todo.done;
     if($scope.todos[index].done){
       var user = Users.getProfile($scope.firebaseUser.uid);
-      console.log(user['email']);
-      $scope.todos[index].completedBy = "ish"
+      user.$loaded().then(function(){
+        $scope.todos[index].completedBy = user.firstName;
+        $scope.todos.$save(index);
+      })
     }else{
       $scope.todos[index].completedBy = ""
+      $scope.todos.$save(index);
     }
-    $scope.todos.$save(index);
+    
   }
 
   $scope.deleteTodo = function(id) {

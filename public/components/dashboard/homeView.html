@@ -23,14 +23,14 @@
         <div id="todo-list" class="row">
           <!-- LOOP OVER THE TODOS IN $scope.todos -->
           <div class="checkbox" ng-repeat="todo in todos | orderBy:'done'">
-              <p>
-                <input ng-checked="todo.done" type="checkbox" ng-click="checkTodo(todo)" id="{{todo}}" />
-                <label ng-class="{strike: todo.done}" for={{todo}}>{{ todo.text }}</label>
-                <a ng-show="todo.done" ng-click="deleteTodo(todo)"><i class="material-icons grey-text text-darken-2 delBtn">delete</i></a>
-                <span ng-show="todo.done " class="chip">
-                  {{ todo.completedBy.name }}
-                </span>
-              </p>
+            <p style="display:inline-block;">
+              <input ng-checked="todo.done" type="checkbox" ng-click="checkTodo(todo)" id="{{todo}}" />
+              <label ng-class="{strike: todo.done}" for={{todo}}>{{ todo.text }}</label>
+              <div ng-show="todo.done" class="chip">
+                {{ todo.completedBy }}
+                <i ng-click="deleteTodo(todo)" class="close material-icons">delete</i>
+              </div>
+            </p>
           </div>
         </div>
       </div>
