@@ -184,6 +184,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   $scope.signOut = function(){
     $scope.todos.$destroy();
     $scope.items.$destroy();
+    $scope.firebaseUser.$destroy();
     Auth.$signOut().then(function(){
       $state.go('auth');
     })
