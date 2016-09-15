@@ -105,7 +105,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       {
         "text": $scope.formData.text, 
         "done": false,
-        "createdBy": $scope.firebaseUser.uid,
+        "createdBy": $scope.firebaseUser.$id,
         "completedBy": ""
       }).then(function(ref){
         $scope.formData = {};
@@ -118,7 +118,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     var index = $scope.todos.$indexFor(todo.$id);
     $scope.todos[index].done = !todo.done;
     if($scope.todos[index].done){
-      var user = Users.getProfile($scope.firebaseUser.uid);
+      var user = Users.getProfile($scope.firebaseUser.$id);
       user.$loaded().then(function(){
         $scope.todos[index].completedBy = user.firstName;
         $scope.todos.$save(index);
@@ -147,7 +147,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       {
         "text": $scope.shopformData.text, 
         "done": false,
-        "createdBy": $scope.firebaseUser.uid,
+        "createdBy": $scope.firebaseUser.$id,
         "completedBy": ""
       }).then(function(ref){
         $scope.shopformData = {}
@@ -160,11 +160,15 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     var index = $scope.items.$indexFor(item.$id);
     $scope.items[index].done = !item.done;
     if($scope.items[index].done){
-      $scope.items[index].completedBy = $scope.firebaseUser.uid
+      var user = Users.getProfile($scope.firebaseUser.$id);
+      user.$loaded().then(function(){
+        $scope.items[index].completedBy = user.firstName;
+        $scope.items.$save(index);
+      })
     }else{
-      $scope.items[index].completedBy = "";
+      $scope.items[index].completedBy = ""
+      $scope.items.$save(index);
     }
-    $scope.items.$save(index);
   }
 
   $scope.deleteItem = function(id) {
@@ -173,7 +177,9 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   //AUTHENTICATION
 
-  $scope.firebaseUser = Auth.$getAuth();
+  var loggedInUser = Auth.$getAuth();
+
+  $scope.firebaseUser = Users.getProfile(loggedInUser.uid);
 
   $scope.signOut = function(){
     $scope.todos.$destroy();

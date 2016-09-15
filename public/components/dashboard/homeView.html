@@ -1,7 +1,7 @@
 <nav>
   <div class="nav-wrapper">
     <ul class="right">
-      <li><a ng-click="signOut()"><i class="material-icons right">exit_to_app</i>{{firebaseUser.email}}</a></li>
+      <li><a ng-click="signOut()"><i class="material-icons right">exit_to_app</i>{{firebaseUser.firstName}}</a></li>
     </ul>
   </div>
 </nav>
@@ -20,17 +20,19 @@
           </div>​
         </form>
 
-        <div id="todo-list" class="row">
+        <div id="todo-list" class="row" >
           <!-- LOOP OVER THE TODOS IN $scope.todos -->
-          <div class="checkbox" ng-repeat="todo in todos | orderBy:'done'">
-            <p style="display:inline-block;">
+          <div class="checkbox" ng-repeat="todo in todos | orderBy:'done'" >
+            <div style="display:inline-block; width:100%">
               <input ng-checked="todo.done" type="checkbox" ng-click="checkTodo(todo)" id="{{todo}}" />
               <label ng-class="{strike: todo.done}" for={{todo}}>{{ todo.text }}</label>
-              <div ng-show="todo.done" class="chip">
-                {{ todo.completedBy }}
-                <i ng-click="deleteTodo(todo)" class="close material-icons">delete</i>
+              <div class="tags" ng-show="todo.done">
+                <div class="chip">
+                  {{ todo.completedBy }}
+                </div>
+                <i ng-click="deleteTodo(todo)" class="delBtn tiny material-icons">delete</i>
               </div>
-            </p>
+            </div>
           </div>
         </div>
       </div>
@@ -51,11 +53,16 @@
         <div id="item-list" class="row">
           <!-- LOOP OVER THE TODOS IN $scope.items -->
           <div class="checkbox" ng-repeat="item in items | orderBy:'done'">
-              <p>
-                <input ng-checked="item.done" type="checkbox" ng-click="checkItem(item)" id="{{item}}" />
-                <label ng-class="{strike: item.done}" for="{{item}}">{{ item.text }}</label>
-                <a ng-show="item.done" ng-click="deleteItem(item)"><i class="material-icons grey-text text-darken-2 delBtn">delete</i></a>
-              </p>
+            <div style="display:inline-block; width:100%">
+              <input ng-checked="item.done" type="checkbox" ng-click="checkItem(item)" id="{{item}}" />
+              <label ng-class="{strike: item.done}" for={{item}}>{{ item.text }}</label>
+              <div class="tags" ng-show="item.done">
+                <div class="chip">
+                  {{ item.completedBy }}
+                </div>
+                <i ng-click="deleteItem(item)" class="delBtn tiny material-icons">delete</i>
+              </div>
+            </div>
           </div>
         </div>
       </div>
