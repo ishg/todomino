@@ -5,28 +5,23 @@ var app = express();
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var morgan = require('morgan');
-var sass = require('node-sass-middleware');
 
 // configuration
 
 app.use(express.static(__dirname + '/public'));
-app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({'extended': true}));
 app.use(bodyParser.json());
 app.use(bodyParser.json({type: 'application/vnd.api+json'}))
 app.use(methodOverride());
 
-// routes
+app.use(morgan('dev'));
 
+// routes
   // application
   
   app.get('*', function(req,res){
     res.sendFile('./public/index.html');
   });
-
-  // authentication
-
-
   
 // list (start app with node.js)
 app.listen(process.env.PORT || 5000);

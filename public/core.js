@@ -48,26 +48,31 @@ angular.module('toDomino', ['ui.router', 'firebase'])
     });
 })
 
-.factory('Todos', function($firebaseArray){
-  function getTodos(){
-    return $firebaseArray(firebase.database().ref().child('todos'));
-  }
-  return{
-    getTodos: getTodos
-  }
-})
-
-.factory('Items', function($firebaseArray){
-  function getItems(){
-    return $firebaseArray(firebase.database().ref().child('items'));  
-  }
-  return{
-    getItems: getItems
-  }
-})
-
 .factory('Auth', function($firebaseAuth){
   return $firebaseAuth();
+})
+
+.factory('Lists', function($firebaseArray, $firebaseObject){
+  var lists = []
+  var Lists = {
+    newListRef: function(name){
+      var ref = firebase.database().ref('/' + name);
+      lists.push({
+        name: name,
+        ref: ref
+      });
+      return $firebaseArray(ref);
+    },
+    getAll: function(){
+      return lists;
+    },
+    getList: function(name){
+      return lists.find(function(item){
+        return item.name == name;
+      });
+    }
+  }
+  return Lists;
 })
 
 .factory('Users', function($firebaseObject){
@@ -87,7 +92,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .controller('mainController', 
-  function($rootScope, $state, $scope, Todos, Items, Auth, Users){
+  function($rootScope, $state, $scope, Auth, Users, Lists){
 
   $scope.formData = {};
   $scope.shopformData = {};
@@ -96,7 +101,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   $rootScope.stateIsLoading = true;
 
-  $scope.todos = Todos.getTodos();
+  $scope.todos = Lists.newListRef('todos');
 
   $scope.todos.$loaded().then(function(){ $rootScope.stateIsLoading = false;})
  
@@ -138,7 +143,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   $rootScope.stateIsLoading = true;
 
-  $scope.items = Items.getItems();
+  $scope.items = Lists.newListRef('items');
 
   $scope.items.$loaded().then(function(){ $rootScope.stateIsLoading = false;})
  
