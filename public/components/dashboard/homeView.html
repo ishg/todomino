@@ -1,37 +1,43 @@
 <nav>
-  <div class="nav-wrapper">
-    <a href="/#/home" class="brand-logo center hide-on-med-and-down">Todomino</a>
+  <div class="nav-wrapper deep-purple darken-1">
+    <a href="/#/home" class="brand-logo ">Todomino</a>
     <ul class="right">
-      <li><a ng-click="signOut()"><i class="material-icons right">exit_to_app</i>{{firebaseUser.firstName}}</a></li>
+      <li><a ng-click="signOut()"><i class="material-icons right">exit_to_app</i><span class="hide-on-small-and-down">{{firebaseUser.firstName}}</span></a></li>
     </ul>
   </div>
 </nav>
 
+<div class="grey lighten-4" style="padding-top: 10px; height: 100%">
+<div class="board">
+  <div class="board-list-wrapper" ng-repeat="list in lists">
+    <div class="board-list">
+      <div class="row board-list-content">
+        <div class="col s12" style="padding: 0;">
+          <div class="card">
+            <div class="card-content">
+              <span class="card-title">{{list.name}}</span>
 
-<div class="row">
-  <div class="col s12 m6 ">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">Todos</span>
+              <form>
+                <button type="submit" class="btn waves-effect waves-light light-green darken-1" style="float: right; border-radius: 50px; padding: 0 0.75rem;" ng-click="createItem(list)"><i class="material-icons">add</i></button>
+                <div style="overflow: hidden; padding-right: .5em;">
+                   <input autofocus type="text" class="form-control input-lg" placeholder="Add an item" ng-model="list.formControl">  
+                </div>​
+              </form>
 
-        <form>
-          <button type="submit" class="btn waves-effect waves-light orange darken-1" style="float: right" ng-click="createTodo()"><i class="material-icons">add</i></button>
-          <div style="overflow: hidden; padding-right: .5em;">
-             <input autofocus type="text" class="form-control input-lg " placeholder="Add a task" ng-model="formData.text">  
-          </div>​
-        </form>
-
-        <div id="todo-list" class="row" >
-          <!-- LOOP OVER THE TODOS IN $scope.todos -->
-          <div class="checkbox" ng-repeat="todo in todos | orderBy:'done'" >
-            <div style="display:inline-block; width:100%">
-              <input ng-checked="todo.done" type="checkbox" ng-click="checkTodo(todo)" id="{{todo}}" />
-              <label ng-class="{strike: todo.done}" for={{todo}}>{{ todo.text }}</label>
-              <div class="tags" ng-show="todo.done">
-                <div class="chip">
-                  {{ todo.completedBy }}
+              <div id="item-list" class="row">
+                <!-- LOOP OVER THE TODOS IN $scope.items -->
+                <div class="checkbox" ng-repeat="item in list.items | orderBy:'done'">
+                  <div style="display:inline-block; width:100%">
+                    <input ng-checked="item.done" type="checkbox" ng-click="checkItem(list, item)" id="{{item}}" />
+                    <label ng-class="{strike: item.done}" for={{item}}>{{ item.text }}</label>
+                    <div class="tags" ng-show="item.done">
+                      <!-- <div class="chip">
+                        {{ item.completedBy }}
+                      </div> -->
+                      <i ng-click="deleteItem(list, item)" class="delBtn tiny material-icons">delete</i>
+                    </div>
+                  </div>
                 </div>
-                <i ng-click="deleteTodo(todo)" class="delBtn tiny material-icons">delete</i>
               </div>
             </div>
           </div>
@@ -39,34 +45,8 @@
       </div>
     </div>
   </div>
-  <div class="col s12 m6 ">
-    <div class="card">
-      <div class="card-content">
-        <span class="card-title">Shopping</span>
-
-        <form>
-          <button type="submit" class="btn waves-effect waves-light green darken-1" style="float: right" ng-click="createItem()"><i class="material-icons">add</i></button>
-          <div style="overflow: hidden; padding-right: .5em;">
-             <input autofocus type="text" class="form-control input-lg" placeholder="Add an item" ng-model="shopformData.text">  
-          </div>​
-        </form>
-
-        <div id="item-list" class="row">
-          <!-- LOOP OVER THE TODOS IN $scope.items -->
-          <div class="checkbox" ng-repeat="item in items | orderBy:'done'">
-            <div style="display:inline-block; width:100%">
-              <input ng-checked="item.done" type="checkbox" ng-click="checkItem(item)" id="{{item}}" />
-              <label ng-class="{strike: item.done}" for={{item}}>{{ item.text }}</label>
-              <div class="tags" ng-show="item.done">
-                <div class="chip">
-                  {{ item.completedBy }}
-                </div>
-                <i ng-click="deleteItem(item)" class="delBtn tiny material-icons">delete</i>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div style="display: inline-block" class="create-list">
+    <a class="center waves-effect waves-light btn-large orange darken-2 create-list-btn"><i class="material-icons left">add</i>add a list</a>
   </div>
+</div>
 </div>

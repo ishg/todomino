@@ -97,87 +97,45 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   $scope.formData = {};
   $scope.shopformData = {};
 
-  //TODOS
-
-  $rootScope.stateIsLoading = true;
-
-  $scope.todos = Lists.newListRef('todos');
-
-  $scope.todos.$loaded().then(function(){ $rootScope.stateIsLoading = false;})
- 
-  $scope.createTodo = function() {
-    $scope.todos.$add(
-      {
-        "text": $scope.formData.text, 
-        "done": false,
-        "createdBy": $scope.firebaseUser.$id,
-        "completedBy": ""
-      }).then(function(ref){
-        $scope.formData = {};
-      }).catch(function(error){
-        console.log("ERROR: " + error);
-      });
-  };
-
-  $scope.checkTodo = function(todo){
-    var index = $scope.todos.$indexFor(todo.$id);
-    $scope.todos[index].done = !todo.done;
-    if($scope.todos[index].done){
-      var user = Users.getProfile($scope.firebaseUser.$id);
-      user.$loaded().then(function(){
-        $scope.todos[index].completedBy = user.firstName;
-        $scope.todos.$save(index);
-      })
-    }else{
-      $scope.todos[index].completedBy = ""
-      $scope.todos.$save(index);
-    }
-    
-  }
-
-  $scope.deleteTodo = function(id) {
-    $scope.todos.$remove(id);  
-  };
-
   // ITEMS
+  
+  $scope.lists = [];
 
-  $rootScope.stateIsLoading = true;
-
-  $scope.items = Lists.newListRef('items');
-
-  $scope.items.$loaded().then(function(){ $rootScope.stateIsLoading = false;})
+  $scope.lists.push({name: 'Todos', formControl: '', items: Lists.newListRef('todos')});
+  $scope.lists.push({name: 'Shopping', formControl: '', items: Lists.newListRef('items')});
+  $scope.lists.push({name: 'Indian Store', formControl: '', items: Lists.newListRef('indian_store')});
  
-  $scope.createItem = function() {
-    $scope.items.$add(
+  $scope.createItem = function(list) {
+    list.items.$add(
       {
-        "text": $scope.shopformData.text, 
+        "text": list.formControl, 
         "done": false,
         "createdBy": $scope.firebaseUser.$id,
         "completedBy": ""
       }).then(function(ref){
-        $scope.shopformData = {}
+        list.formControl = ""
       }).catch(function(error){
         console.log("ERROR: " + error);
       });
   };
 
-  $scope.checkItem = function(item){
-    var index = $scope.items.$indexFor(item.$id);
-    $scope.items[index].done = !item.done;
-    if($scope.items[index].done){
+  $scope.checkItem = function(list, item){
+    var index = list.items.$indexFor(item.$id);
+    list.items[index].done = !item.done;
+    if(list.items[index].done){
       var user = Users.getProfile($scope.firebaseUser.$id);
       user.$loaded().then(function(){
-        $scope.items[index].completedBy = user.firstName;
-        $scope.items.$save(index);
+        list.items[index].completedBy = user.firstName;
+        list.items.$save(index);
       })
     }else{
-      $scope.items[index].completedBy = ""
-      $scope.items.$save(index);
+      list.items[index].completedBy = ""
+      list.items.$save(index);
     }
   }
 
-  $scope.deleteItem = function(id) {
-    $scope.items.$remove(id);
+  $scope.deleteItem = function(list, item) {
+    list.items.$remove(item);
   }
 
   //AUTHENTICATION
@@ -187,8 +145,9 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   $scope.firebaseUser = Users.getProfile(loggedInUser.uid);
 
   $scope.signOut = function(){
-    $scope.todos.$destroy();
-    $scope.items.$destroy();
+    $scope.lists.forEach(function(el, index, arr){
+      el.items.$destroy();
+    })
     $scope.firebaseUser.$destroy();
     Auth.$signOut().then(function(){
       $state.go('auth');

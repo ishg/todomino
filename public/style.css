@@ -5,6 +5,7 @@ html{
 
 body{
   height:100%;
+  position: relative;
 }
 
 #todo-list{ 
@@ -45,4 +46,76 @@ body{
   height: 25px;
   line-height: 25px;
   cursor: pointer;
+}
+
+.spinner{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.board{
+  max-height: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  position: relative;
+  overflow-y: hidden;
+  padding-bottom: 25px; 
+  padding-left: 15px;
+  padding-right: 25px;
+}
+
+.board-list-wrapper{
+  width: 270px;
+  margin: 0 5px;
+  height: 100%;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.board-list{
+  border-radius: 3px;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  max-height: 100%;
+  position: relative;
+  white-space: normal;
+}
+
+.board-list-content{
+  -webkit-box-flex: 1;
+  -webkit-flex: 1 1 auto;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  margin: 0 4px;
+  padding: 0 4px;
+  z-index: 1;
+  min-height: 0;
+}
+
+.board-list-header{
+
+}
+
+.create-list-btn{
+  margin: 0.5rem 0 1rem 0;
+}
+
+[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+    left: 0;
 }
