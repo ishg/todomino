@@ -93,9 +93,7 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
 .controller('mainController', 
   function($rootScope, $state, $scope, Auth, Users, Lists){
-
-  $scope.formData = {};
-  $scope.shopformData = {};
+  $('.modal-trigger').leanModal();
 
   // ITEMS
   
@@ -136,6 +134,14 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 
   $scope.deleteItem = function(list, item) {
     list.items.$remove(item);
+  }
+
+  $scope.createList = function(){
+    var newList = Lists.newListRef($scope.createListForm);
+    newList.$loaded().then(function(){
+      $scope.lists.push({name: $scope.createListForm, formControl: '', items: newList});
+      $scope.createListForm = "";
+    })
   }
 
   //AUTHENTICATION

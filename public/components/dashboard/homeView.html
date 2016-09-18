@@ -46,7 +46,19 @@
     </div>
   </div>
   <div style="display: inline-block" class="create-list">
-    <a class="center waves-effect waves-light btn-large orange darken-2 create-list-btn"><i class="material-icons left">add</i>add a list</a>
+    <a href="#createListModel" class="center waves-effect waves-light btn-large orange darken-2 create-list-btn modal-trigger"><i class="material-icons left">add</i>add a list</a>
   </div>
 </div>
+</div>
+
+<!-- Modal Structure -->
+<div id="createListModel" class="modal">
+  <div class="modal-content">
+    <h5>Create New List</h5>
+    <input autofocua type="text" class="form-control input-lg" placeholder="Name your list" ng-model="createListForm">
+  </div>
+  <div class="modal-footer">
+    <a ng-click="createList()" class="modal-action modal-close waves-effect waves-green btn-flat">Create</a>
+    <a ng-click="$('$createListModal').closeModal()" class="modal-action modal-close waves-effect waves-red btn-flat">Cancel</a>
+  </div>
 </div>
