@@ -53,30 +53,30 @@ angular.module('toDomino', ['ui.router', 'firebase'])
 })
 
 .factory('Lists', function($firebaseArray, $firebaseObject){
-  var lists = []
   var Lists = {
-    newListRef: function(name){
-      var ref = firebase.database().ref('/' + name);
-      lists.push({
-        name: name,
-        ref: ref
-      });
-      return $firebaseArray(ref);
-    },
     getAll: function(){
+      var lists = [];
+      var ref = $firebaseArray(firebase.database().ref('/lists/'));
+      ref.$loaded().then(function(){
+        ref.forEach(function(el, index, arr){
+          lists.push({
+            name: el.name,
+            formControl: "",
+            items: $firebaseArray(firebase.database().ref('/lists/' + el.$id + '/items/'))
+          })
+        })
+      })
       return lists;
     },
-    getList: function(name){
-      return lists.find(function(item){
-        return item.name == name;
-      });
+    getList: function(id){
+      var ref = firebase.database().ref('/lists/' + id);
+      return $firebaseArray(ref);
     }
   }
   return Lists;
 })
 
 .factory('Users', function($firebaseObject){
-
   var Users = {
     newUserRef: function(user){
       var ref = firebase.database().ref('/users/' + user.uid);
@@ -87,21 +87,15 @@ angular.module('toDomino', ['ui.router', 'firebase'])
       return $firebaseObject(ref);
     }
   };
-
   return Users;
 })
 
 .controller('mainController', 
-  function($rootScope, $state, $scope, Auth, Users, Lists){
+  function($rootScope, $state, $scope, Auth, Users, Lists, $firebaseArray){
   $('.modal-trigger').leanModal();
 
   // ITEMS
-  
-  $scope.lists = [];
-
-  $scope.lists.push({name: 'Todos', formControl: '', items: Lists.newListRef('todos')});
-  $scope.lists.push({name: 'Shopping', formControl: '', items: Lists.newListRef('items')});
-  $scope.lists.push({name: 'Indian Store', formControl: '', items: Lists.newListRef('indian_store')});
+  $scope.lists = Lists.getAll();
  
   $scope.createItem = function(list) {
     list.items.$add(
@@ -137,11 +131,17 @@ angular.module('toDomino', ['ui.router', 'firebase'])
   }
 
   $scope.createList = function(){
-    var newList = Lists.newListRef($scope.createListForm);
-    newList.$loaded().then(function(){
-      $scope.lists.push({name: $scope.createListForm, formControl: '', items: newList});
+    var list = $firebaseArray(firebase.database().ref('/lists/'));
+    list.$add({ name: $scope.createListForm, items: {} }).then(function(ref) {
+      var id = ref.key;
+      $scope.lists.push({
+        name: $scope.createListForm,
+        formControl: '',
+        items: $firebaseArray(firebase.database().ref('/lists/' + id + '/items/'))
+      })
       $scope.createListForm = "";
-    })
+    });
+    
   }
 
   //AUTHENTICATION

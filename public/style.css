@@ -119,3 +119,7 @@ body{
 [type="checkbox"]:not(:checked), [type="checkbox"]:checked {
     left: 0;
 }
+
+nav .brand-logo{
+  padding: 0 0.75rem;
+}

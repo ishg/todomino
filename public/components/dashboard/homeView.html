@@ -26,7 +26,7 @@
 
               <div id="item-list" class="row">
                 <!-- LOOP OVER THE TODOS IN $scope.items -->
-                <div class="checkbox" ng-repeat="item in list.items | orderBy:'done'">
+                <div class="checkbox" ng-repeat="item in list.items ">
                   <div style="display:inline-block; width:100%">
                     <input ng-checked="item.done" type="checkbox" ng-click="checkItem(list, item)" id="{{item}}" />
                     <label ng-class="{strike: item.done}" for={{item}}>{{ item.text }}</label>
